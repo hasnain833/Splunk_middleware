@@ -42,6 +42,7 @@ Action: {result['suggested_action']}
 
 Event: {log_text[:1000]}
 """
+                    # Send WhatsApp alert
                     self.alert_manager.send_alert(msg)
 
             time.sleep(self.interval)
