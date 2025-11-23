@@ -1,0 +1,11 @@
+requests
+urllib3
+groq
+twilio
+faiss-cpu
+langchain
+langchain-community
+sentence-transformers
+pandas
+tqdm
+python-dotenv
