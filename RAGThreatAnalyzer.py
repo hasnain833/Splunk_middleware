@@ -10,14 +10,21 @@ class RAGThreatAnalyzer:
     def analyze(self, log_text, k=6):
         """
         Full RAG pipeline:
-        1. Retrieve similar logs
+        1. Retrieve similar logs (if FAISS available)
         2. Build prompt
         3. Query Groq Llama model
         4. Return JSON threat classification
         """
-        # Retrieve similar logs
-        results = self.faiss_store.similarity_search(log_text, k=k)
-        context = "\n\n".join([r.page_content for r in results])
+        # Retrieve similar logs (if FAISS store is available)
+        if self.faiss_store:
+            try:
+                results = self.faiss_store.similarity_search(log_text, k=k)
+                context = "\n\n".join([r.page_content for r in results])
+            except Exception as e:
+                print(f"⚠️  RAG retrieval error: {e}, continuing without context")
+                context = "No additional context available."
+        else:
+            context = "No additional context available (RAG not configured)."
 
         system_prompt = """
 You are a cybersecurity threat analyst. You MUST reply ONLY with valid JSON.
