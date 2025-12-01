@@ -84,7 +84,7 @@ class SplunkConnector:
 
         return results.get("results", [])
 
-    def fetch_latest_logs(self, index, minutes=5, limit=500):
+    def fetch_latest_logs(self, index, minutes=1, limit=5):
         """
         Fetch logs from the past N minutes from specified index.
         """
@@ -102,60 +102,102 @@ class SplunkConnector:
         query = f"index={index} earliest=0 latest=now | fields * | head {head}"
         return self.run_search(query, count=head)
 
-    def fetch_security_logs(self, index="botsv3", minutes=5, limit=5000):
+    def fetch_security_logs(self, index="*", minutes=1, limit=5, sourcetypes=None):
         """
-        Fetch security logs from botsv3 index with specific sourcetypes.
+        Fetch security logs from specified index(es) with specific sourcetypes.
         This is the main query used for security monitoring.
         
         Args:
-            index: Splunk index name (default: botsv3)
+            index: Splunk index name, "*" for all indexes, or comma-separated list (default: "*")
+                  Examples: "*" or "botsv3" or "botsv3,main,security"
             minutes: Number of minutes to look back (default: 5)
             limit: Maximum number of results to return (default: 5000)
+            sourcetypes: List of sourcetypes to filter (default: None uses predefined list)
         
         Returns:
             List of log events matching the security query
         """
+        # Build index clause - support multiple indexes or "*" for all
+        if index == "*":
+            # All indexes
+            index_clause = "index=*"
+        elif isinstance(index, str) and "," in index:
+            # Multiple indexes: index IN (index1, index2, ...)
+            index_list = [idx.strip() for idx in index.split(",")]
+            index_clause = f"index IN ({', '.join(index_list)})"
+        else:
+            # Single index
+            index_clause = f"index={index}"
+        
+        # Default sourcetypes if not provided
+        if sourcetypes is None:
+            sourcetypes = [
+                "aws:cloudtrail",
+                "aws:cloudwatchlogs:vpcflow",
+                "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+                "XmlWinEventLog:Security",
+                "suricata:alert",
+                "stream:http",
+                "stream:dns"
+            ]
+        
+        # Build sourcetype clause
+        sourcetype_list = ', '.join([f'"{st}"' for st in sourcetypes])
+        
         query = f"""
-        index={index}
+        {index_clause}
         earliest=-{minutes}m latest=now
-        sourcetype IN (
-          "aws:cloudtrail",
-          "aws:cloudwatchlogs:vpcflow",
-          "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
-          "XmlWinEventLog:Security",
-          "suricata:alert",
-          "stream:http",
-          "stream:dns"
-        )
+        sourcetype IN ({sourcetype_list})
         | fields _time host sourcetype source src dest user signature action _raw
         | head {limit}
         """
         return self.run_search(query, count=limit)
 
-    def fetch_security_logs_all_time(self, index="botsv3", limit=5000):
+    def fetch_security_logs_all_time(self, index="*", limit=5, sourcetypes=None):
         """
-        Fetch all existing security logs from botsv3 index with specific sourcetypes (all-time).
+        Fetch all existing security logs from specified index(es) with specific sourcetypes (all-time).
         Used for initial scan of historical data.
         
         Args:
-            index: Splunk index name (default: botsv3)
+            index: Splunk index name, "*" for all indexes, or comma-separated list (default: "*")
+                  Examples: "*" or "botsv3" or "botsv3,main,security"
             limit: Maximum number of results to return (default: 5000)
+            sourcetypes: List of sourcetypes to filter (default: None uses predefined list)
         
         Returns:
             List of log events matching the security query
         """
+        # Build index clause - support multiple indexes or "*" for all
+        if index == "*":
+            # All indexes
+            index_clause = "index=*"
+        elif isinstance(index, str) and "," in index:
+            # Multiple indexes: index IN (index1, index2, ...)
+            index_list = [idx.strip() for idx in index.split(",")]
+            index_clause = f"index IN ({', '.join(index_list)})"
+        else:
+            # Single index
+            index_clause = f"index={index}"
+        
+        # Default sourcetypes if not provided
+        if sourcetypes is None:
+            sourcetypes = [
+                "aws:cloudtrail",
+                "aws:cloudwatchlogs:vpcflow",
+                "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+                "XmlWinEventLog:Security",
+                "suricata:alert",
+                "stream:http",
+                "stream:dns"
+            ]
+        
+        # Build sourcetype clause
+        sourcetype_list = ', '.join([f'"{st}"' for st in sourcetypes])
+        
         query = f"""
-        index={index}
+        {index_clause}
         earliest=0 latest=now
-        sourcetype IN (
-          "aws:cloudtrail",
-          "aws:cloudwatchlogs:vpcflow",
-          "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
-          "XmlWinEventLog:Security",
-          "suricata:alert",
-          "stream:http",
-          "stream:dns"
-        )
+        sourcetype IN ({sourcetype_list})
         | fields _time host sourcetype source src dest user signature action _raw
         | head {limit}
         """

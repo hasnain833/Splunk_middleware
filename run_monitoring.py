@@ -57,6 +57,12 @@ def main():
     splunk_password = os.environ.get("SPLUNK_PASSWORD", "")
     groq_api_key = os.environ.get("GROQ_API_KEY", "")
     
+    # Index configuration - supports "*" for all indexes, single index, or comma-separated multiple indexes
+    # Examples: "*" or "botsv3" or "botsv3,main,security"
+    splunk_index = os.environ.get("SPLUNK_INDEX", "*")
+    monitoring_interval = int(os.environ.get("MONITORING_INTERVAL", "30"))
+    severity_threshold = int(os.environ.get("SEVERITY_THRESHOLD", "70"))
+    
     # Construct Splunk URL
     if not splunk_host.startswith("http"):
         if splunk_port in ["8000", "8001"]:
@@ -131,9 +137,9 @@ def main():
             preprocessor=preprocessor,
             analyzer=analyzer,
             alert_manager=alert_manager,
-            index="botsv3",
-            interval=60,  # Check every 60 seconds
-            severity_threshold=70  # Alert if severity >= 70
+            index=splunk_index,  # Can be "*" for all indexes, single index, or comma-separated: "*" or "botsv3" or "botsv3,main,security"
+            interval=monitoring_interval,  # Check interval in seconds
+            severity_threshold=severity_threshold  # Alert if severity >= threshold
         )
         
         # Start monitoring
