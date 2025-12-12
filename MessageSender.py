@@ -11,8 +11,6 @@ class MessageSender:
         self.index = index
         self.interval = interval
         self.severity_threshold = severity_threshold
-
-        # Twilio setup
         self.client = Client(sid, auth_token) if sid and auth_token else None
         self.from_number = from_number
         self.to_number = to_number

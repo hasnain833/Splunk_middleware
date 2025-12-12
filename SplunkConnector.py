@@ -27,9 +27,7 @@ class SplunkConnector:
         )
 
     def search(self, query, limit=500):
-        """Run a blocking Splunk search and return results list."""
         try:
-            # Start search job
             job_resp = self._post(
                 "/services/search/jobs",
                 {
@@ -44,7 +42,6 @@ class SplunkConnector:
             if not sid:
                 return []
 
-            # Fetch results
             result_resp = self._get(
                 f"/services/search/jobs/{sid}/results",
                 {"output_mode": "json", "count": limit}
@@ -56,10 +53,6 @@ class SplunkConnector:
             return []
 
     def fetch_security_logs(self, index="*", minutes=1, limit=5, sourcetypes=None):
-        """
-        Construct a security-focused Splunk query.
-        Logic remains exactly the same as before, just clearer.
-        """
         time_clause = (
             "earliest=0 latest=now"
             if minutes is None else

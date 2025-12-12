@@ -18,7 +18,6 @@ class ThreatAnalyzer:
         self.model = model
 
     def analyze(self, log_text):
-        """Send log text to Groq and parse the resulting JSON safely."""
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -36,7 +35,6 @@ class ThreatAnalyzer:
             return None
 
     def _parse_json(self, raw):
-        """Attempt direct JSON parse; fall back to regex extraction."""
         try:
             return json.loads(raw)
         except Exception:
