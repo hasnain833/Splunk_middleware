@@ -1,9 +1,3 @@
-requests
-urllib3
-groq
+splunk-sdk
 twilio
 python-dotenv
-langchain
-langchain-community
-faiss-cpu
-sentence-transformers

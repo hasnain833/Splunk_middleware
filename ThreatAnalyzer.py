@@ -1,50 +1,60 @@
-import json
 import re
-from groq import Groq
 
 class ThreatAnalyzer:
-    SYSTEM_PROMPT = (
-        '''Analyze security logs. Reply ONLY with JSON: {
-        "classification":"malicious|suspicious|benign",
-        "severity":0-100,
-        "confidence":0-100,
-        "reason":"text",
-        "suggested_action":"text"
-        }'''
-    )
-
-    def __init__(self, groq_api_key, model="llama-3.1-8b-instant"):
-        self.client = Groq(api_key=groq_api_key)
-        self.model = model
+    def __init__(self):
+        self.malicious_patterns = [
+            (r"unauthorized\s+access", 95),
+            (r"privilege\s+escalation", 90),
+            (r"sql\s+injection", 95),
+            (r"xss\s+cross.site", 85),
+            (r"malware\s+detected", 100),
+            (r"ransomware", 100),
+            (r"data\s+exfiltration", 90),
+            (r"root\s+kit", 95),
+            (r"backdoor", 90),
+            (r"command\s+injection", 90),
+        ]
+        
+        self.suspicious_patterns = [
+            (r"failed\s+login", 60),
+            (r"brute\s+force", 75),
+            (r"port\s+scan", 55),
+            (r"firewall\s+blocked", 50),
+            (r"unusual\s+activity", 65),
+            (r"anomalous\s+behavior", 60),
+            (r"multiple\s+failed", 70),
+            (r"suspicious\s+connection", 65),
+            (r"unexpected\s+traffic", 55),
+            (r"access\s+denied", 45),
+        ]
 
     def analyze(self, log_text):
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": self.SYSTEM_PROMPT},
-                    {"role": "user", "content": f"LOG EVENT:\n{log_text}"}
-                ],
-                temperature=0.1
-            )
-
-            raw = response.choices[0].message.content
-            return self._parse_json(raw)
-
-        except Exception:
-            return None
-
-    def _parse_json(self, raw):
-        try:
-            return json.loads(raw)
-        except Exception:
-            pass
-
-        match = re.search(r"\{.*\}", raw, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(0))
-            except Exception:
-                pass
-
-        return None
+        log_lower = log_text.lower()
+        
+        for pattern, severity in self.malicious_patterns:
+            if re.search(pattern, log_lower, re.IGNORECASE):
+                return {
+                    "classification": "malicious",
+                    "severity": severity,
+                    "confidence": 85,
+                    "reason": f"Detected malicious pattern: {pattern}",
+                    "suggested_action": "Immediately investigate and isolate affected systems"
+                }
+        
+        for pattern, severity in self.suspicious_patterns:
+            if re.search(pattern, log_lower, re.IGNORECASE):
+                return {
+                    "classification": "suspicious",
+                    "severity": severity,
+                    "confidence": 70,
+                    "reason": f"Detected suspicious pattern: {pattern}",
+                    "suggested_action": "Review logs and monitor for further activity"
+                }
+        
+        return {
+            "classification": "benign",
+            "severity": 10,
+            "confidence": 80,
+            "reason": "No known threat patterns detected",
+            "suggested_action": "Continue monitoring"
+        }

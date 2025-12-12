@@ -1,35 +1,37 @@
 import os
 from dotenv import load_dotenv
-
+from splunklib import client
+from twilio.rest import Client
 from SplunkConnector import SplunkConnector
 from ThreatAnalyzer import ThreatAnalyzer
 from MessageSender import MessageSender
 
 load_dotenv()
 
-def build_splunk_url(host, port):
-    return f"{host}:{port}" if host.startswith("http") else f"https://{host}:{port}"
-
 def main():
     try:
-        host = os.getenv("SPLUNK_HOST", "localhost")
-        port = os.getenv("SPLUNK_PORT", "8089")
-        base_url = build_splunk_url(host, port)
-        splunk = SplunkConnector(
-            base_url=base_url,
+        service = client.connect(
+            host=os.getenv("SPLUNK_HOST", "localhost"),
+            port=int(os.getenv("SPLUNK_PORT", "8089")),
             username=os.getenv("SPLUNK_USERNAME", "admin"),
-            password=os.getenv("SPLUNK_PASSWORD", "")
+            password=os.getenv("SPLUNK_PASSWORD", ""),
+            scheme="https"
         )
-        analyzer = ThreatAnalyzer(
-            groq_api_key=os.getenv("GROQ_API_KEY", "")
-        )
+        splunk = SplunkConnector(service)
+        analyzer = ThreatAnalyzer()
 
-        sender = MessageSender.from_env(
+        twilio_client = None
+        sid = os.getenv("TWILIO_ACCOUNT_SID")
+        auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+        if sid and auth_token:
+            twilio_client = Client(sid, auth_token)
+
+        sender = MessageSender(
             splunk=splunk,
             analyzer=analyzer,
-            index="*",
-            interval=30,
-            severity_threshold=10
+            client=twilio_client,
+            from_number=os.getenv("TWILIO_WHATSAPP_FROM"),
+            to_number=os.getenv("ALERT_WHATSAPP_TO")
         )
         sender.start()
 
