@@ -2,10 +2,8 @@ requests
 urllib3
 groq
 twilio
-faiss-cpu
+python-dotenv
 langchain
 langchain-community
+faiss-cpu
 sentence-transformers
-pandas
-tqdm
-python-dotenv
