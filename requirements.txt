@@ -1,3 +1,10 @@
 splunk-sdk
 twilio
 python-dotenv
+langchain
+langchain-groq
+langchain-community
+langchain-huggingface
+faiss-cpu
+numpy
+sentence-transformers
