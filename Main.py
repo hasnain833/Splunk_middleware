@@ -18,7 +18,7 @@ def main():
     )
     
     splunk = SplunkConnector(service)
-    analyzer = ThreatAnalyzer()
+    analyzer = ThreatAnalyzer(index_path="rag_db")
     
     twilio_client = None
     sid = os.getenv("TWILIO_ACCOUNT_SID")

@@ -1,0 +1,83 @@
+Failed login attempt for user admin from IP 203.0.113.10 <--TYPE--> malicious
+Multiple failed SSH login attempts detected for user root <--TYPE--> malicious
+Unauthorized login attempt detected outside business hours <--TYPE--> malicious
+Credential stuffing attack detected using leaked passwords <--TYPE--> malicious
+Brute force attack suspected due to repeated 401 responses <--TYPE--> malicious
+Account lockout triggered after excessive failed login attempts <--TYPE--> malicious
+Authentication bypass attempt using manipulated session token <--TYPE--> malicious
+SQL Injection attempt detected using payload ' OR '1'='1 <--TYPE--> malicious
+Detected SQL Injection payload UNION SELECT * FROM users <--TYPE--> malicious
+User attempted SQL Injection via POST /login.php <--TYPE--> malicious
+Time-based SQL Injection detected using SLEEP(5) <--TYPE--> malicious
+Blind SQL Injection attempt detected in URL parameter <--TYPE--> malicious
+Detected XSS attempt: <script>alert('xss')</script> <--TYPE--> malicious
+Stored XSS payload detected in comment field <--TYPE--> malicious
+Reflected XSS attempt detected via search parameter <--TYPE--> malicious
+Malicious JavaScript injection attempt detected in HTTP request <--TYPE--> malicious
+Command injection attempt detected using ; ls -la <--TYPE--> malicious
+Remote code execution attempt via HTTP POST payload <--TYPE--> malicious
+Detected shell command execution via user input <--TYPE--> malicious
+RCE attempt using && cat /etc/passwd <--TYPE--> malicious
+Suspicious system command execution initiated by web process <--TYPE--> malicious
+Directory traversal attempt: ../../etc/passwd <--TYPE--> malicious
+Unauthorized access attempt to /etc/shadow <--TYPE--> malicious
+User attempted to read restricted configuration file <--TYPE--> malicious
+Path traversal detected in file download request <--TYPE--> malicious
+Malware-like behavior detected on endpoint <--TYPE--> malicious
+Trojan signature detected during file scan <--TYPE--> malicious
+Ransomware activity suspected due to mass file encryption <--TYPE--> malicious
+Suspicious executable launched from Temp directory <--TYPE--> malicious
+Known malware hash detected in uploaded file <--TYPE--> malicious
+PowerShell Base64 encoded command executed <--TYPE--> malicious
+Suspicious PowerShell activity: -EncodedCommand flag detected <--TYPE--> malicious
+Execution of obfuscated PowerShell script detected <--TYPE--> malicious
+Unauthorized PowerShell session initiated by unknown user <--TYPE--> malicious
+Port scanning activity detected from IP 198.51.100.14 <--TYPE--> malicious
+DDoS attack suspected due to traffic spike <--TYPE--> malicious
+Repeated connection attempts to restricted ports <--TYPE--> malicious
+Suspicious outbound traffic to unknown external IP <--TYPE--> malicious
+Possible data exfiltration detected via large outbound transfers <--TYPE--> malicious
+Suspicious file upload detected: shell.php <--TYPE--> malicious
+Unauthorized API access attempt detected <--TYPE--> malicious
+High number of 403 Forbidden responses detected <--TYPE--> malicious
+Manipulated HTTP headers detected in request <--TYPE--> malicious
+CSRF attack attempt detected via forged request <--TYPE--> malicious
+Unauthorized privilege escalation attempt detected <--TYPE--> malicious
+User attempted to execute sudo without permission <--TYPE--> malicious
+Suspicious group membership modification detected <--TYPE--> malicious
+New admin account created without approval <--TYPE--> malicious
+Malicious scheduled task creation detected <--TYPE--> malicious
+Unauthorized cron job added for persistence <--TYPE--> malicious
+Suspicious service installation detected <--TYPE--> malicious
+Registry run key modified for persistence <--TYPE--> malicious
+Directory enumeration attempt detected (/admin, /backup) <--TYPE--> malicious
+Reconnaissance activity detected via automated scanning <--TYPE--> malicious
+User attempted to enumerate system users <--TYPE--> malicious
+Application fingerprinting attempt detected <--TYPE--> malicious
+Suspicious DNS queries detected to random domains <--TYPE--> malicious
+Command-and-control communication suspected <--TYPE--> malicious
+DNS tunneling behavior detected <--TYPE--> malicious
+Abnormal application crash indicating exploit attempt <--TYPE--> malicious
+Unexpected process spawned by web server <--TYPE--> malicious
+Memory corruption exploit attempt detected <--TYPE--> malicious
+Unauthorized data access by internal user <--TYPE--> malicious
+Sensitive file copied without authorization <--TYPE--> malicious
+Policy violation detected: restricted command execution <--TYPE--> malicious
+
+
+
+Successful HTTP request: GET /home returned status 200 <--TYPE--> safe
+User authentication completed successfully for user john_doe <--TYPE--> safe
+Normal SSH login from trusted IP 192.168.1.20 <--TYPE--> safe
+Scheduled backup completed successfully without errors <--TYPE--> safe
+Routine system update check completed <--TYPE--> safe
+GET request for /js/app.js served successfully <--TYPE--> safe
+Database connection established and query executed normally <--TYPE--> safe
+User session expired and logged out cleanly <--TYPE--> safe
+API request processed successfully with response code 200 <--TYPE--> safe
+System monitoring log: CPU usage within normal range <--TYPE--> safe
+Health check endpoint /health returned OK <--TYPE--> safe
+User profile updated successfully <--TYPE--> safe
+Cache cleared successfully as part of routine maintenance <--TYPE--> safe
+Normal DNS resolution request completed <--TYPE--> safe
+Application started successfully and listening on port 8080 <--TYPE--> safe
